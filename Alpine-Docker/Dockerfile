@@ -59,7 +59,8 @@ RUN pip install --user --no-index --find-links=/Rin-Commands-API/wheels -r requi
 EXPOSE 8000
 # ENTRYPOINT ["/sbin/tini", "--"]
 # gunicorn api:app --workers 5 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-CMD ["/Rin-Commands-API/start.sh"]
+# CMD ["/Rin-Commands-API/start.sh"]
+CMD ["/Rin-Commands-API/start.sh", "&&" ,"uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # STOPSIGNAL SIGTERM
 
