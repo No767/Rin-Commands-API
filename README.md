@@ -9,7 +9,7 @@ The Commands API for Rin
 <div align=left>
 
 # Info 
-Within Rin's Site, there exists a page that allows you to see the different commands. The way that it is done is that it fetches from an API. And this is the API it fetches the data from. The API is a private API, which means that it is only really used internally. But this API can be self-hosted by anyone. This API is built on FastAPI, and uses PostgreSQL and Redis.
+Within Rin's Site, there exists a page that allows you to see the different commands. The way that it is done is that it fetches from an API. And this is the API it fetches the data from. The API is a private API, which means that it is only really used internally. But this API can be self-hosted by anyone (The API is packaged using Docker and can be used with both the Debian or Alpine base images) This API is built on FastAPI, and uses PostgreSQL and Redis.
 
 # License
 
