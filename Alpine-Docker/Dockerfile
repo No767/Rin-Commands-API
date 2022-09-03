@@ -56,16 +56,17 @@ ENV PATH="${PATH}:/home/rin/.local/bin"
 ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN pip install --user --no-index --find-links=/Rin-Commands-API/wheels -r requirements.txt
+
 EXPOSE 8000
-# ENTRYPOINT ["/sbin/tini", "--"]
-# gunicorn api:app --workers 5 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-# CMD ["/Rin-Commands-API/start.sh"]
-CMD ["/Rin-Commands-API/start.sh", "&&" ,"uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/Rin-Commands-API/start.sh"]
 
 STOPSIGNAL SIGTERM
 
 # Image metadata
 LABEL org.opencontainers.image.title="Rin-Commands-API"
 LABEL org.opencontainers.image.description="An API for fetching commands and their info for Rin"
-LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.licenses="GPL-3.0"
 LABEL org.opencontainers.image.source="https://github.com/No767/Rin-Commands-API"

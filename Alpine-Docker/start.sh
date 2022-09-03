@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [[ -v POSTGRES_USER ]]; then
     echo "Postgres_Username=${POSTGRES_USER}" >> /Rin-Commands-API/.env
 else
@@ -32,3 +34,12 @@ else
     echo "Missing Postgres_Server_Port env var! POSTGRES_PORT environment variable is not set."
     exit 1;
 fi
+
+if [[ -v REDIS_IP ]]; then
+    echo "Redis_Server_IP=${REDIS_IP}" >> /Rin-Commands-API/.env
+else
+    echo "Missing Redis_Server_IP env var! REDIS_IP environment variable is not set."
+    exit 1;
+fi
+
+exec gunicorn api:app --workers 5 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
