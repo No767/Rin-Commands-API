@@ -13,10 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        base-image: [alpine, debian]
+        base-image: [Alpine, Debian]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Format String for Tagging
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ matrix.base-image }}
+        id: stringTag
 
       - name: Prepare Docker Meta
         id: meta
@@ -26,7 +32,7 @@ jobs:
             no767/rin-commands-api
           tags: |
             type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=${{ matrix.base-image }}
+            type=edge,branch=dev,suffix=-${{ steps.stringTag.outputs.lowercase }}
 
       - name: Setup Docker Buildx
         id: buildx
@@ -52,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./${{ matrix.base-image }}-Docker/Dockerfile
+          file: ./${{ steps.stringTag.outputs.capitalized }}-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
