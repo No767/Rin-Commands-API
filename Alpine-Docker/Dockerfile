@@ -62,7 +62,7 @@ EXPOSE 8000
 # CMD ["/Rin-Commands-API/start.sh"]
 CMD ["/Rin-Commands-API/start.sh", "&&" ,"uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
 
-# STOPSIGNAL SIGTERM
+STOPSIGNAL SIGTERM
 
 # Image metadata
 LABEL org.opencontainers.image.title="Rin-Commands-API"

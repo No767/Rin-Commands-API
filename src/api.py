@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
+import os
 import sys
 from pathlib import Path
 
+import redis.asyncio as redis
+from dotenv import load_dotenv
 from fastapi import FastAPI, Response, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse, RedirectResponse
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from redis.asyncio.connection import ConnectionPool
 
 mainPath = Path(__file__).parents[1]
 sys.path.append(str(mainPath))
@@ -12,6 +19,9 @@ sys.path.append(str(mainPath))
 from api_utils import CrudMethods
 from api_utils.db import SessionLocal
 
+load_dotenv()
+
+REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
 tagsMetadata = [
     {"name": "Obtain Commands", "description": "Gets the list of commands that Rin has"}
 ]
@@ -65,6 +75,7 @@ async def docs_redirect():
     tags=["Obtain Commands"],
     description="Literally get all of the commands Rin has",
 )
+@cache(namespace="get_all_commands", expire=3600)
 async def get_all_commands(response: Response):
     result = await utils.get_all_commands()
     if len(result) == 0:
@@ -81,6 +92,7 @@ async def get_all_commands(response: Response):
     tags=["Obtain Commands"],
     description="Gets the commands for a specific module or cog from Rin",
 )
+@cache(namespace="get_module_commands", expire=3600)
 async def get_module_commands(response: Response, module: str):
     res = await utils.get_all_commands_from_module(module=module)
     if len(res) == 0:
@@ -92,3 +104,10 @@ async def get_module_commands(response: Response, module: str):
     else:
         response.status_code = status.HTTP_200_OK
         return {"status": response.status_code, "count": len(res), "data": res}
+
+
+@app.on_event("startup")
+async def startup():
+    pool = ConnectionPool.from_url(url=f"redis://{REDIS_SERVER_IP}")
+    r = redis.Redis(connection_pool=pool)
+    FastAPICache.init(RedisBackend(r), prefix="rin-cache")
