@@ -1,4 +1,4 @@
-name: Docker Build (Docker Hub)
+name: Docker Build (Hub, Alpine)
 
 on:
   push:
@@ -11,18 +11,10 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        base-image: [Alpine, Debian]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Format String for Tagging
-        uses: ASzc/change-string-case-action@v2
-        with:
-          string: ${{ matrix.base-image }}
-        id: stringTag
 
       - name: Prepare Docker Meta
         id: meta
@@ -32,7 +24,7 @@ jobs:
             no767/rin-commands-api
           tags: |
             type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=-${{ steps.stringTag.outputs.lowercase }}
+            type=edge,branch=dev,suffix=-alpine
 
       - name: Setup Docker Buildx
         id: buildx
@@ -58,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./${{ steps.stringTag.outputs.capitalized }}-Docker/Dockerfile
+          file: ./Alpine-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
