@@ -3,7 +3,8 @@
 ####################################################################################################
 FROM python:3.10.6-slim-bullseye AS builder
 ENV DEBIAN_FRONTEND=noninteractive 
-RUN apt install -y --no-install-recommends \
+RUN apt update \
+    && apt install -y --no-install-recommends \
     build-essential \
     curl \
     ca-certificates
@@ -28,7 +29,8 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ## Final image
 ####################################################################################################
 FROM python:3.10.6-slim-bullseye
-RUN apt install -y --no-install-recommends \
+RUN apt update \
+    && apt install -y --no-install-recommends \
     tini \
     ca-certificates \
     bash

@@ -5,13 +5,17 @@ from pathlib import Path
 
 import redis.asyncio as redis
 from dotenv import load_dotenv
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Request, Response, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse, RedirectResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis.asyncio.connection import ConnectionPool
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 mainPath = Path(__file__).parents[1]
 sys.path.append(str(mainPath))
@@ -22,18 +26,34 @@ from api_utils.db import SessionLocal
 load_dotenv()
 
 REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
+REDIS_SERVER_PORT = os.getenv("Redis_Port")
+
 tagsMetadata = [
-    {"name": "Obtain Commands", "description": "Gets the list of commands that Rin has"}
+    {
+        "name": "Obtain Commands",
+        "description": "Gets the list of commands that Rin has",
+    },
+    {"name": "Metrics", "description": "Exporter for Prometheus metrics"},
 ]
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri=f"redis://{REDIS_SERVER_IP}:{REDIS_SERVER_PORT}/1",
+)
 app = FastAPI(openapi_tags=tagsMetadata, redoc_url=None)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 utils = CrudMethods()
 
 description = """
 # Overview
 An API to fetch the commands that Rin actively has since v2.2. This is meant to be a private API.
 
+# Rate Limiting
+The global rate limit is **60** requests per **60** minutes (or 60 requests per hour).
+
 # GitHub
-For Rin, refer to the GitHub Repo [here](https://github.com/No767/Rin)
+[Rin](https://github.com/No767/Rin)
+[Rin-Commands-API](https://github.com/No767/Rin-Commands-API)
 """
 
 
@@ -69,14 +89,15 @@ async def docs_redirect():
     return RedirectResponse(url="/docs")
 
 
+@cache(namespace="get_all_commands", expire=3600)
 @app.get(
     "/commands/all",
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Literally get all of the commands Rin has",
 )
-@cache(namespace="get_all_commands", expire=3600)
-async def get_all_commands(response: Response):
+@limiter.limit("60/hour")
+async def get_all_commands(request: Request, response: Response):
     result = await utils.get_all_commands()
     if len(result) == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -86,14 +107,15 @@ async def get_all_commands(response: Response):
         return {"status": response.status_code, "count": len(result), "data": result}
 
 
+@cache(namespace="get_module_commands", expire=3600)
 @app.get(
     "/commands/{module}",
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Gets the commands for a specific module or cog from Rin",
 )
-@cache(namespace="get_module_commands", expire=3600)
-async def get_module_commands(response: Response, module: str):
+@limiter.limit("60/hour")
+async def get_module_commands(request: Request, response: Response, module: str):
     res = await utils.get_all_commands_from_module(module=module)
     if len(res) == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -108,6 +130,9 @@ async def get_module_commands(response: Response, module: str):
 
 @app.on_event("startup")
 async def startup():
-    pool = ConnectionPool.from_url(url=f"redis://{REDIS_SERVER_IP}")
+    pool = ConnectionPool.from_url(
+        url=f"redis://{REDIS_SERVER_IP}", encoding="utf-8", decode_responses=True
+    )
     r = redis.Redis(connection_pool=pool)
     FastAPICache.init(RedisBackend(r), prefix="rin-cache")
+    Instrumentator().instrument(app).expose(app, endpoint="/metrics", tags=["Metrics"])

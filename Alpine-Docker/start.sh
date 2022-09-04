@@ -42,4 +42,11 @@ else
     exit 1;
 fi
 
+if [[ -v REDIS_PORT ]]; then
+    echo "Redis_Port=${REDIS_REDIS_PORT}" >> /Rin-Commands-API/.env
+else
+    echo "Missing Redis_Port env var! REDIS_PORT environment variable is not set."
+    exit 1;
+fi
+
 exec gunicorn api:app --workers 5 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000

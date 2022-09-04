@@ -33,7 +33,7 @@ CREATE TABLE public.rin_help (
 );
 
 
-ALTER TABLE public.rin_help OWNER TO "Rin";
+ALTER TABLE public.rin_help OWNER TO "Rin_Commands";
 
 --
 -- Data for Name: rin_help; Type: TABLE DATA; Schema: public; Owner: Rin

@@ -1,19 +1,18 @@
-name: Docker Build (Docker Hub)
+name: Docker Build (Hub, Alpine)
 
 on:
   push:
     paths-ignore:
       - "**.md"
     branches:
-      - master
       - dev
+    tags:
+      - 'v*'
 
 jobs:
   Build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        base-image: [Alpine, Debian]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,8 +24,10 @@ jobs:
           images: |
             no767/rin-commands-api
           tags: |
-            type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=${{ matrix.base-image }}
+            type=semver,pattern={{version}},suffix=-alpine
+            type=semver,pattern={{major}}.{{minor}},suffix=-alpine
+            type=semver,pattern={{major}},suffix=-alpine
+            type=edge,branch=dev,suffix=-alpine
 
       - name: Setup Docker Buildx
         id: buildx
@@ -52,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./${{ matrix.base-image }}-Docker/Dockerfile
+          file: ./Alpine-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
