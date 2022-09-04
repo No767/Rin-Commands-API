@@ -8,8 +8,7 @@ RUN apk add --no-cache \
     ca-certificates \
     build-base \
     curl \
-    linux-headers \
-    git
+    linux-headers
 
 # Add Poetry locally
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -35,8 +34,7 @@ FROM python:3.10.6-alpine3.16
 RUN apk add --no-cache \
     ca-certificates \
     tini \
-    bash \
-    git
+    bash
 
 WORKDIR /Rin-Commands-API
 COPY /src/api.py /Rin-Commands-API/

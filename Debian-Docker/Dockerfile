@@ -7,8 +7,7 @@ RUN apt update \
     && apt install -y --no-install-recommends \
     build-essential \
     curl \
-    ca-certificates \
-    git
+    ca-certificates
 
 # Ad Poetry Locally
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -34,8 +33,7 @@ RUN apt update \
     && apt install -y --no-install-recommends \
     tini \
     ca-certificates \
-    bash \
-    git
+    bash
 
 WORKDIR /Rin-Commands-API
 COPY /src/api.py /Rin-Commands-API/
