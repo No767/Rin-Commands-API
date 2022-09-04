@@ -28,7 +28,11 @@ load_dotenv()
 REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
 
 tagsMetadata = [
-    {"name": "Obtain Commands", "description": "Gets the list of commands that Rin has"}
+    {
+        "name": "Obtain Commands",
+        "description": "Gets the list of commands that Rin has",
+    },
+    {"name": "Metrics", "description": "Exporter for Prometheus metrics"},
 ]
 limiter = Limiter(
     key_func=get_remote_address, storage_uri=f"redis://{REDIS_SERVER_IP}:6379/1"
@@ -128,4 +132,4 @@ async def startup():
     )
     r = redis.Redis(connection_pool=pool)
     FastAPICache.init(RedisBackend(r), prefix="rin-cache")
-    Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+    Instrumentator().instrument(app).expose(app, endpoint="/metrics", tags=["Metrics"])
