@@ -26,6 +26,7 @@ from api_utils.db import SessionLocal
 load_dotenv()
 
 REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
+REDIS_SERVER_PORT = os.getenv("Redis_Port")
 
 tagsMetadata = [
     {
@@ -35,7 +36,8 @@ tagsMetadata = [
     {"name": "Metrics", "description": "Exporter for Prometheus metrics"},
 ]
 limiter = Limiter(
-    key_func=get_remote_address, storage_uri=f"redis://{REDIS_SERVER_IP}:6379/1"
+    key_func=get_remote_address,
+    storage_uri=f"redis://{REDIS_SERVER_IP}:{REDIS_SERVER_PORT}/1",
 )
 app = FastAPI(openapi_tags=tagsMetadata, redoc_url=None)
 app.state.limiter = limiter
@@ -50,7 +52,8 @@ An API to fetch the commands that Rin actively has since v2.2. This is meant to 
 The global rate limit is **60** requests per **60** minutes (or 60 requests per hour).
 
 # GitHub
-For Rin, refer to the GitHub Repo [here](https://github.com/No767/Rin)
+[Rin](https://github.com/No767/Rin)
+[Rin-Commands-API](https://github.com/No767/Rin-Commands-API)
 """
 
 
