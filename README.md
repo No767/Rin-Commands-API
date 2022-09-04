@@ -19,8 +19,8 @@ Note that these are deployed mostly from the dev branch, but also include prod d
 
 |             | GitHub Container Registry (GHCR) | Docker Hub     |
 | :----:        |    :----:   |    :---:      |
-| **Alpine**     | [![Docker Build (GHCR, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml)      |  [![Docker Build (Hub, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml)      |
-| **Debian**   |   [![Docker Build (GHCR, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml)   | [![Docker Build (Hub, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml)      | 
+| **Alpine (3.16)**     | [![Docker Build (GHCR, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml)      |  [![Docker Build (Hub, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml)      |
+| **Debian (11)**   |   [![Docker Build (GHCR, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml)   | [![Docker Build (Hub, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml)      | 
 # License
 
 GPL-3.0
