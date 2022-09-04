@@ -5,7 +5,6 @@ on:
     paths-ignore:
       - "**.md"
     branches:
-      - master
       - dev
     tags:
       - 'v*'
@@ -24,7 +23,12 @@ jobs:
           images: |
             ghcr.io/no767/rin-commands-api
           tags: |
-            type=semver,pattern={{raw}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{version}},suffix=-debian
+            type=semver,pattern={{major}}.{{minor}},suffix=-debian
+            type=semver,pattern={{major}},suffix=-debian
             type=edge,branch=dev,suffix=-debian
 
       - name: Setup Docker Buildx
