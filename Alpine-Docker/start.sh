@@ -43,7 +43,7 @@ else
 fi
 
 if [[ -v REDIS_PORT ]]; then
-    echo "Redis_Port=${REDIS_REDIS_PORT}" >> /Rin-Commands-API/.env
+    echo "Redis_Port=${REDIS_PORT}" >> /Rin-Commands-API/.env
 else
     echo "Missing Redis_Port env var! REDIS_PORT environment variable is not set."
     exit 1;
