@@ -124,6 +124,25 @@ memcache = ["aiomcache"]
 dynamodb = ["aiobotocore (>=1.4.1,<2.0.0)"]
 
 [[package]]
+name = "fastapi-limiter"
+version = "0.1.5"
+description = "A request rate limiter for fastapi"
+category = "main"
+optional = false
+python-versions = "^3.7"
+develop = false
+
+[package.dependencies]
+fastapi = "*"
+redis = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/long2ice/fastapi-limiter.git"
+reference = "master"
+resolved_reference = "0330c64d3d13413835cd8605b805e601c6418c7a"
+
+[[package]]
 name = "filelock"
 version = "3.8.0"
 description = "A platform independent file lock."
@@ -264,6 +283,29 @@ nodeenv = ">=0.11.1"
 pyyaml = ">=5.1"
 toml = "*"
 virtualenv = ">=20.0.8"
+
+[[package]]
+name = "prometheus-client"
+version = "0.14.1"
+description = "Python client for the Prometheus monitoring system."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+twisted = ["twisted"]
+
+[[package]]
+name = "prometheus-fastapi-instrumentator"
+version = "5.9.1"
+description = "Instrument your FastAPI with Prometheus metrics"
+category = "main"
+optional = false
+python-versions = ">=3.7.0,<4.0.0"
+
+[package.dependencies]
+fastapi = ">=0.38.1,<1.0.0"
+prometheus-client = ">=0.8.0,<1.0.0"
 
 [[package]]
 name = "pydantic"
@@ -506,7 +548,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a951dbf6986f0739249f76109299674a76eec846720824e7d0846d46233dd0d9"
+content-hash = "af4a7c75c9d94cd105a6e21c63154dc7d565ada442dc00abf09974524d5c81c6"
 
 [metadata.files]
 anyio = [
@@ -534,6 +576,7 @@ deprecated = []
 distlib = []
 fastapi = []
 fastapi-cache2 = []
+fastapi-limiter = []
 filelock = []
 greenlet = []
 gunicorn = []
@@ -597,6 +640,8 @@ platformdirs = [
     {file = "platformdirs-2.5.2.tar.gz", hash = "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"},
 ]
 pre-commit = []
+prometheus-client = []
+prometheus-fastapi-instrumentator = []
 pydantic = []
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},

@@ -5,12 +5,15 @@ from pathlib import Path
 
 import redis.asyncio as redis
 from dotenv import load_dotenv
-from fastapi import FastAPI, Response, status
+from fastapi import Depends, FastAPI, Response, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse, RedirectResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis.asyncio.connection import ConnectionPool
 
 mainPath = Path(__file__).parents[1]
@@ -22,6 +25,7 @@ from api_utils.db import SessionLocal
 load_dotenv()
 
 REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
+
 tagsMetadata = [
     {"name": "Obtain Commands", "description": "Gets the list of commands that Rin has"}
 ]
@@ -31,6 +35,9 @@ utils = CrudMethods()
 description = """
 # Overview
 An API to fetch the commands that Rin actively has since v2.2. This is meant to be a private API.
+
+# Rate Limiting
+The global rate limit is **60** requests per **60** minutes (or 60 requests per hour).
 
 # GitHub
 For Rin, refer to the GitHub Repo [here](https://github.com/No767/Rin)
@@ -74,6 +81,7 @@ async def docs_redirect():
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Literally get all of the commands Rin has",
+    dependencies=[Depends(RateLimiter(times=60, minutes=60))],
 )
 @cache(namespace="get_all_commands", expire=3600)
 async def get_all_commands(response: Response):
@@ -91,6 +99,7 @@ async def get_all_commands(response: Response):
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Gets the commands for a specific module or cog from Rin",
+    dependencies=[Depends(RateLimiter(times=60, minutes=60))],
 )
 @cache(namespace="get_module_commands", expire=3600)
 async def get_module_commands(response: Response, module: str):
@@ -108,6 +117,15 @@ async def get_module_commands(response: Response, module: str):
 
 @app.on_event("startup")
 async def startup():
-    pool = ConnectionPool.from_url(url=f"redis://{REDIS_SERVER_IP}")
+    pool = ConnectionPool.from_url(
+        url=f"redis://{REDIS_SERVER_IP}", encoding="utf-8", decode_responses=True
+    )
     r = redis.Redis(connection_pool=pool)
     FastAPICache.init(RedisBackend(r), prefix="rin-cache")
+    await FastAPILimiter.init(r)
+    Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await FastAPILimiter.close()
