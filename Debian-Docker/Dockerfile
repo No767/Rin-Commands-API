@@ -7,7 +7,8 @@ RUN apt update \
     && apt install -y --no-install-recommends \
     build-essential \
     curl \
-    ca-certificates
+    ca-certificates \
+    git
 
 # Ad Poetry Locally
 ENV PYTHONDONTWRITEBYTECODE 1

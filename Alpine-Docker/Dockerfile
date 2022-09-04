@@ -8,7 +8,8 @@ RUN apk add --no-cache \
     ca-certificates \
     build-base \
     curl \
-    linux-headers 
+    linux-headers \
+    git
 
 # Add Poetry locally
 ENV PYTHONDONTWRITEBYTECODE 1
