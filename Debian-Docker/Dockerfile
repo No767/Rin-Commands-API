@@ -34,7 +34,8 @@ RUN apt update \
     && apt install -y --no-install-recommends \
     tini \
     ca-certificates \
-    bash
+    bash \
+    git
 
 WORKDIR /Rin-Commands-API
 COPY /src/api.py /Rin-Commands-API/

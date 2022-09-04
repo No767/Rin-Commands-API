@@ -4,6 +4,8 @@
 
 ![Rin](https://raw.githubusercontent.com/No767/Rin/dev/assets/rin-logo.png)
 
+[![Required Python Version](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://github.com/No767/Rin-Commands-API/blob/dev/pyproject.toml) [![Docker Build (GHCR, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-alpine.yml) [![Docker Build (GHCR, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-ghcr-debian.yml) [![Docker Build (Hub, Alpine)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-alpine.yml) [![Docker Build (Hub, Debian)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml/badge.svg)](https://github.com/No767/Rin-Commands-API/actions/workflows/docker-build-hub-debian.yml) ![GitHub](https://img.shields.io/github/license/No767/Rin-Commands-API?label=License&logo=github)
+
 The Commands API for Rin
 
 <div align=left>

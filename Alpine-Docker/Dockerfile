@@ -35,7 +35,8 @@ FROM python:3.10.6-alpine3.16
 RUN apk add --no-cache \
     ca-certificates \
     tini \
-    bash
+    bash \
+    git
 
 WORKDIR /Rin-Commands-API
 COPY /src/api.py /Rin-Commands-API/
