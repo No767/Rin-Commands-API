@@ -46,12 +46,7 @@ limiter = Limiter(
 app = FastAPI(openapi_tags=tagsMetadata, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://api.rinbot.live",
-        "http://0.0.0.0:8000",
-        "http://localhost:8000",
-        "http://localhost",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -79,7 +74,7 @@ def rin_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Rin Commands",
-        version="0.1.0",
+        version="0.2.1",
         description=description,
         routes=app.routes,
     )

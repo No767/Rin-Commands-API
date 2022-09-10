@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rin-commands-api"
-version = "0.1.0"
+version = "0.2.1"
 description = "A small API meant for fetching commands from Rin's Help Data DB"
 authors = ["No767 <73260931+No767@users.noreply.github.com>"]
 license = "Apache-2.0"
