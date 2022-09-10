@@ -14,3 +14,9 @@ Adds a new release workflow, and patches issues with CORS and dependency bumps.
 - Use Renovate for dependency management and upgrades
 
 ## ➖ Removals
+
+## ⬆️ Dependency Updates
+
+- Update python Docker tag to v3.10.7 (@renovate)
+- Update dependency fastapi to ^0.82.0 (@renovate)
+- Update actions/checkout action to v3 (@renovate)
