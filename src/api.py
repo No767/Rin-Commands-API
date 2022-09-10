@@ -74,7 +74,7 @@ def rin_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Rin Commands",
-        version="0.1.0",
+        version="0.2.1",
         description=description,
         routes=app.routes,
     )
