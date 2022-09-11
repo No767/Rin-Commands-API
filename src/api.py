@@ -36,6 +36,7 @@ tagsMetadata = [
         "description": "Gets the list of commands that Rin has",
     },
     {"name": "Metrics", "description": "Exporter for Prometheus metrics"},
+    {"name": "Modules", "description": "Gets the list of modules that Rin has"},
 ]
 
 limiter = Limiter(
@@ -136,6 +137,23 @@ async def get_module_commands(request: Request, response: Response, module: str)
     else:
         response.status_code = status.HTTP_200_OK
         return {"status": response.status_code, "count": len(res), "data": res}
+
+
+@app.get(
+    "/modules/all",
+    response_class=ORJSONResponse,
+    tags=["Modules"],
+    description="Gets all of the modules that Rin has",
+)
+@cache(namespace="get_available_modules", expire=3600)
+async def get_all_modules(request: Request, response: Response):
+    mainRes = await utils.get_modules()
+    if len(mainRes) == 0:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"status": response.status_code, "message": "No modules found"}
+    else:
+        response.status_code = status.HTTP_200_OK
+        return {"status": response.status_code, "count": len(mainRes), "data": mainRes}
 
 
 @app.on_event("startup")
