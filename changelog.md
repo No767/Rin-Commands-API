@@ -5,6 +5,7 @@ This update brings some new features and an new endpoint.
 ## 🛠️ Changes
 
 - Sort by `ASC` for getting all of the commands and modules
+- Properly document all endpoint responses and schemas
 
 ## ✨ Additions
 

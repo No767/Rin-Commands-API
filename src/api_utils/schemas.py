@@ -10,3 +10,26 @@ class HelpData(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class AllCommandsResponseSuccess(BaseModel):
+    status: int
+    count: int
+    data: list[HelpData]
+
+
+class GetModulesResponseSuccess(BaseModel):
+    status: int
+    count: int
+    data: list[HelpData]
+
+
+class GetAllModulesResponseSuccess(BaseModel):
+    status: int
+    count: int
+    data: list[str]
+
+
+class NotFoundError(BaseModel):
+    status: int
+    message: str

@@ -22,7 +22,9 @@ from slowapi.util import get_remote_address
 mainPath = Path(__file__).parents[1]
 sys.path.append(str(mainPath))
 
-from api_utils import CrudMethods
+from api_utils import (AllCommandsResponseSuccess, CrudMethods,
+                       GetAllModulesResponseSuccess, GetModulesResponseSuccess,
+                       NotFoundError)
 from api_utils.db import SessionLocal
 
 load_dotenv()
@@ -65,8 +67,8 @@ An API to fetch the commands that Rin actively has since v2.2. This is meant to 
 
 The default rate limiting for all endpoints is **75** requests per hour.
 # GitHub
-[Rin](https://github.com/No767/Rin)
-[Rin-Commands-API](https://github.com/No767/Rin-Commands-API)
+- [Rin](https://github.com/No767/Rin)
+- [Rin-Commands-API](https://github.com/No767/Rin-Commands-API)
 """
 
 
@@ -75,7 +77,7 @@ def rin_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Rin Commands",
-        version="0.2.1",
+        version="0.3.0",
         description=description,
         routes=app.routes,
     )
@@ -107,6 +109,10 @@ async def docs_redirect():
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Literally get all of the commands Rin has",
+    responses={
+        200: {"model": AllCommandsResponseSuccess},
+        404: {"model": NotFoundError},
+    },
 )
 @cache(namespace="get_all_commands", expire=3600)
 async def get_all_commands(request: Request, response: Response):
@@ -124,16 +130,18 @@ async def get_all_commands(request: Request, response: Response):
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
     description="Gets the commands for a specific module or cog from Rin",
+    responses={
+        200: {"model": GetModulesResponseSuccess},
+        404: {"model": NotFoundError},
+        422: {"model": NotFoundError},
+    },
 )
 @cache(namespace="get_module_commands", expire=3600)
 async def get_module_commands(request: Request, response: Response, module: str):
     res = await utils.get_all_commands_from_module(module=module)
-    if len(res) == 0:
+    if len(res) == 0 and isinstance(module, str):
         response.status_code = status.HTTP_404_NOT_FOUND
-        return {
-            "status": response.status_code,
-            "message": "No commands found within that module",
-        }
+        return {"status": response.status_code, "message": "No commands found"}
     else:
         response.status_code = status.HTTP_200_OK
         return {"status": response.status_code, "count": len(res), "data": res}
@@ -144,6 +152,10 @@ async def get_module_commands(request: Request, response: Response, module: str)
     response_class=ORJSONResponse,
     tags=["Modules"],
     description="Gets all of the modules that Rin has",
+    responses={
+        200: {"model": GetAllModulesResponseSuccess},
+        404: {"model": NotFoundError},
+    },
 )
 @cache(namespace="get_available_modules", expire=3600)
 async def get_all_modules(request: Request, response: Response):
