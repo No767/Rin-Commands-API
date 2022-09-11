@@ -1,12 +1,15 @@
-# ✨ Rin Commands API v0.2.0 ✨
+# ✨ Rin Commands API v0.3.0 ✨
 
-Finally, a fix to the CORS issue for once and for all
+This update brings some new features and an new endpoint.
 
 ## 🛠️ Changes
 
-- Finally fix CORS issues
+- Sort by `ASC` for getting all of the commands and modules
+- Properly document all endpoint responses and schemas
 
 ## ✨ Additions
+
+- New endpoint: Get All Modules endpoint (`/modules/all`)
 
 ## ➖ Removals
 
