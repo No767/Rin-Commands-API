@@ -49,4 +49,4 @@ else
     exit 1;
 fi
 
-exec gunicorn api:app --workers 5 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+exec gunicorn api:app --workers 8 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
