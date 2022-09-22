@@ -1,19 +1,14 @@
-# 🛠️ Rin Commands API v0.3.0 🛠️
+# 🛠️ Rin Commands API v0.3.2 🛠️
 
-This update fixes some issues with v0.3.0
-
+This update fixes many issues after noticing that there were issues when the frontend was deployed to prod. By removing the rate limiter, this means that the prometheus metrics should start working again, and the frontend won't get spammed w/ 429 errors
 ## 🛠️ Changes
 
-- Use queries for searching up modules instead of path
-- `/commands/{module}` to `/command/module`
-- Allow automerging for renovate 
-- Update Workers Count to 8
+- List all commands w/ `ASC` order by `name`
 ## ✨ Additions
 
 ## ➖ Removals
 
+- Completely remove the rate limiter like for the 15th time already
+
 ## ⬆️ Dependency Updates
 
-- Update dependency fastapi to ^0.83.0
-- Update dependency fastapi to ^0.84.0
-- Update dependency fastapi to ^0.85.0
