@@ -5,7 +5,7 @@ from pathlib import Path
 
 import redis.asyncio as redis
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Response, status
+from fastapi import FastAPI, Query, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse, RedirectResponse
@@ -77,7 +77,7 @@ def rin_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Rin Commands",
-        version="0.3.0",
+        version="0.3.1",
         description=description,
         routes=app.routes,
     )
@@ -126,18 +126,26 @@ async def get_all_commands(request: Request, response: Response):
 
 
 @app.get(
-    "/commands/{module}",
+    "/commands/module",
     response_class=ORJSONResponse,
     tags=["Obtain Commands"],
-    description="Gets the commands for a specific module or cog from Rin",
+    description="Get all of the commands in a module",
     responses={
         200: {"model": GetModulesResponseSuccess},
         404: {"model": NotFoundError},
-        422: {"model": NotFoundError},
     },
 )
 @cache(namespace="get_module_commands", expire=3600)
-async def get_module_commands(request: Request, response: Response, module: str):
+async def get_module_commands(
+    request: Request,
+    response: Response,
+    module: str = Query(
+        title="Query String",
+        description="The query string for the module to obtain commands from.",
+        min_length=1,
+        max_length=50,
+    ),
+):
     res = await utils.get_all_commands_from_module(module=module)
     if len(res) == 0 and isinstance(module, str):
         response.status_code = status.HTTP_404_NOT_FOUND

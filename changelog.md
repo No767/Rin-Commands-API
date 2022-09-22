@@ -1,15 +1,12 @@
-# ✨ Rin Commands API v0.3.0 ✨
+# 🛠️ Rin Commands API v0.3.0 🛠️
 
-This update brings some new features and an new endpoint.
+This update fixes some issues with v0.3.0
 
 ## 🛠️ Changes
 
-- Sort by `ASC` for getting all of the commands and modules
-- Properly document all endpoint responses and schemas
-
+- Use queries for searching up modules instead of path
+- `/commands/{module}` to `/command/module`
 ## ✨ Additions
-
-- New endpoint: Get All Modules endpoint (`/modules/all`)
 
 ## ➖ Removals
 
