@@ -16,7 +16,7 @@ class CrudMethods:
         async with SessionLocal() as session:
             async with session.begin():
                 selectItem = select(models.HelpData).order_by(
-                    models.HelpData.module.asc()
+                    models.HelpData.name.asc()
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]

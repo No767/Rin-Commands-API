@@ -5,7 +5,7 @@ from pathlib import Path
 
 import redis.asyncio as redis
 from dotenv import load_dotenv
-from fastapi import FastAPI, Query, Request, Response, status
+from fastapi import FastAPI, Query, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse, RedirectResponse
@@ -14,10 +14,6 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
 from prometheus_fastapi_instrumentator import Instrumentator
 from redis.asyncio.connection import ConnectionPool
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
-from slowapi.util import get_remote_address
 
 mainPath = Path(__file__).parents[1]
 sys.path.append(str(mainPath))
@@ -30,7 +26,6 @@ from api_utils.db import SessionLocal
 load_dotenv()
 
 REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
-REDIS_SERVER_PORT = os.getenv("Redis_Port")
 
 tagsMetadata = [
     {
@@ -41,11 +36,6 @@ tagsMetadata = [
     {"name": "Modules", "description": "Gets the list of modules that Rin has"},
 ]
 
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["75/hour"],
-    storage_uri=f"redis://{REDIS_SERVER_IP}:{REDIS_SERVER_PORT}/1",
-)
 app = FastAPI(openapi_tags=tagsMetadata, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
@@ -54,18 +44,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.add_middleware(SlowAPIMiddleware)
 utils = CrudMethods()
 
 description = """
 # Overview
 An API to fetch the commands that Rin actively has since v2.2. This is meant to be a private API.
 
-# Rate Limiting
-
-The default rate limiting for all endpoints is **75** requests per hour.
 # GitHub
 - [Rin](https://github.com/No767/Rin)
 - [Rin-Commands-API](https://github.com/No767/Rin-Commands-API)
@@ -77,7 +61,7 @@ def rin_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="Rin Commands",
-        version="0.3.1",
+        version="0.3.2",
         description=description,
         routes=app.routes,
     )
@@ -115,7 +99,7 @@ async def docs_redirect():
     },
 )
 @cache(namespace="get_all_commands", expire=3600)
-async def get_all_commands(request: Request, response: Response):
+async def get_all_commands(response: Response):
     result = await utils.get_all_commands()
     if len(result) == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -137,7 +121,6 @@ async def get_all_commands(request: Request, response: Response):
 )
 @cache(namespace="get_module_commands", expire=3600)
 async def get_module_commands(
-    request: Request,
     response: Response,
     module: str = Query(
         title="Query String",
@@ -166,7 +149,7 @@ async def get_module_commands(
     },
 )
 @cache(namespace="get_available_modules", expire=3600)
-async def get_all_modules(request: Request, response: Response):
+async def get_all_modules(response: Response):
     mainRes = await utils.get_modules()
     if len(mainRes) == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
