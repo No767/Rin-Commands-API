@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-buildx-ghcr-alpine-
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Alpine-Docker/Dockerfile
@@ -106,7 +106,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-ghcr-debian
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Debian-Docker/Dockerfile
